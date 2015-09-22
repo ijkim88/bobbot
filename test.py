@@ -28,6 +28,46 @@ class TestBobbot(unittest.TestCase):
         )
 
     @patch('slacker.requests')
+    def test_echo_hello_world(self, mock_requests):
+        response = echo("Hello World", self.bot, self.events)
+        self.assertEqual(
+            "Hello World",
+            response,
+        )
+
+    @patch('slacker.requests')
+    def test_echo_hello_comma_world(self, mock_requests):
+        response = echo("Hello,World", self.bot, self.events)
+        self.assertEqual(
+            "Hello,World",
+            response,
+        )
+
+    @patch('slacker.requests')
+    def test_echo_blank(self, mock_requests):
+        response = echo("", self.bot, self.events)
+        self.assertEqual(
+            "",
+            response,
+        )
+
+    @patch('slacker.requests')
+    def test_echo_double_quotes(self, mock_requests):
+        response = echo('"Hello World"', self.bot, self.events)
+        self.assertEqual(
+            'Hello World',
+            response,
+        )
+
+    @patch('slacker.requests')
+    def test_echo_double_quotes(self, mock_requests):
+        response = echo("'Hello World'", self.bot, self.events)
+        self.assertEqual(
+            'Hello World',
+            response,
+        )
+
+    @patch('slacker.requests')
     def test_botid(self, mock_requests):
         data = json.dumps({
             'ok': 'true',

@@ -37,6 +37,23 @@ def ping(opts, bot, event):
     return "<@%s> I'm here!" % (user_id)
 
 @Bobbot.command
+def echo(opts, bot, event):
+    """Usage: echo [<text>...]
+
+    Echo <text>...
+    """
+    if opts['<text>'] is None:
+        text = ""
+    else:
+        text = " ".join(opts['<text>'])
+
+    if (text.startswith('"') and text.endswith('"')) or\
+       (text.startswith("'") and text.endswith("'")):
+        text = text[1:-1]
+
+    return str(text)
+
+@Bobbot.command
 def botid(opts, bot, event):
     """Usage: botid
 
