@@ -16,6 +16,7 @@ Options:
 import datetime
 import logging
 import sys
+import nflgame
 
 from docopt import docopt
 from slouch import Bot, help
@@ -79,6 +80,30 @@ def clear(opts, bot, event):
     for message in messages[:count]:
         ts = message['ts']
         bot.slack.chat.delete(channel, ts)
+
+@Bobbot.command
+def nflscores(opts, bot, event):
+    """Usage: nflscores --team=<team> --week=<week> [--season=<season>]
+
+    Gets NFL scores of <team> for <week>. <season> can be specified, but defaults to the current season/
+    """
+    team = opts['--team'].strip('"\'')
+    week = int(opts['--week'].strip('"\''))
+    if opts['--season'] is None:
+        season = int(datetime.date.today().strftime('%Y'))
+    else:
+        season = int(opts['--season'].strip('"\''))
+
+    try:
+        games = nflgame.games(season, week=week, home=team, away=team)
+    except:
+        return "Sorry, I can't find it."
+
+    results = games[0].nice_score().split('at')
+    scores = [score.strip() for score in results]
+    scores = ['*%s*' % (score) if games[0].winner in score else score for score in scores]
+
+    return ' at '.join(scores).encode('ascii')
 
 if __name__ == '__main__':
     args = docopt(__doc__)

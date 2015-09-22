@@ -93,5 +93,44 @@ class TestBobbot(unittest.TestCase):
         """
         pass
 
+    @patch('slacker.requests')
+    def test_nflscores_week1_SF_2015(self, mock_requests):
+        opts = (
+            '--season=2015',
+            '--week=1',
+            '--team=SF',
+        )
+        response = nflscores(opts, self.bot, self.events)
+        self.assertEqual(
+            'MIN (3) at *SF (20)*',
+            response,
+        )
+
+    @patch('slacker.requests')
+    def test_nflscores_input_quotes(self, mock_requests):
+        opts = (
+            '--season="2015"',
+            "--week='1'",
+            '--team=SF',
+        )
+        response = nflscores(opts, self.bot, self.events)
+        self.assertEqual(
+            'MIN (3) at *SF (20)*',
+            response,
+        )
+
+    @patch('slacker.requests')
+    def test_nflscores_no_results(self, mock_requests):
+        opts = (
+            '--season=2015',
+            '--week=99',
+            '--team=SF',
+        )
+        response = nflscores(opts, self.bot, self.events)
+        self.assertEqual(
+            "Sorry, I can't find it.",
+            response,
+        )
+
 if __name__ == '__main__':
     unittest.main()
